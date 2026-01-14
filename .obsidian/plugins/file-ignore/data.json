@@ -1,0 +1,9 @@
+{
+  "rules": "temp/\n*.tmp\n.DS_Store\nThumbs.db\nsite/\noverrides/",
+  "ignoredFiles": [],
+  "debug": false,
+  "rulesHistory": [
+    "temp/\n*.tmp\n.DS_Store\nThumbs.db\nsite/\noverrides/",
+    "temp/\n*.tmp\n.DS_Store\nThumbs.db"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "userIgnoreFilters": [
+    "site/",
+    "overrides/"
+  ],
+  "useMarkdownLinks": true,
+  "attachmentFolderPath": "./",
+  "newFileLocation": "current"
+}

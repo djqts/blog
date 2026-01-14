@@ -1,0 +1,33 @@
+site_name: 调试人生
+site_description: 将生活比作一个程序，我们都在不断“调试”中前进，寻找人生的解
+site_url: https://mydomain.org/mysite
+theme:
+  name: material
+  custom_dir: overrides
+  palette:
+    # 夜间模式
+    - scheme: default
+      toggle:
+        icon: material/lightbulb-outline
+        name: Dark mode
+      primary: 'indigo'
+      accent: 'indigo'
+      
+    # 日间模式
+    - scheme: slate
+      toggle:
+        icon: material/lightbulb
+        name: Switch to light mode
+      primary: 'indigo' 
+      accent: 'indigo'
+
+plugins:
+  - search
+  - blog:
+      blog_dir: .
+      archive_date_format: yyyy-MM
+      archive_url_date_format: yyyy-MM
+      categories_allowed:
+        - 个人网站
+      post_url_format: '{slug}/'
+  - tags
