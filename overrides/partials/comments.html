@@ -1,44 +1,111 @@
 {% if page.meta.comments %}
 <h2 id="__comments">{{ lang.t("meta.comments") }}</h2>
-<!-- Insert generated snippet here -->
-<script src="https://giscus.app/client.js" data-repo="djqts/blog" data-repo-id="R_kgDOQ3ubGg"
-    data-category="Announcements" data-category-id="DIC_kwDOQ3ubGs4C08KC" data-mapping="pathname" data-strict="0"
-    data-reactions-enabled="1" data-emit-metadata="1" data-input-position="top" data-theme="preferred_color_scheme"
-    data-lang="zh-CN" crossorigin="anonymous" async>
-</script>
-<!-- Synchronize Giscus theme with palette -->
+<div id="comments-container"></div>
+
 <script>
-    var giscus = document.querySelector("script[src*=giscus]")
+    (function () {
+        const isLocal = window.location.href.includes("127.0.0.1") ||
+            window.location.href.includes("localhost");
 
-    // Set palette on initial load
-    var palette = __md_get("__palette")
-    if (palette && typeof palette.color === "object") {
-        var theme = palette.color.scheme === "slate"
-            ? "transparent_dark"
-            : "light"
+        const container = document.getElementById('comments-container');
+        if (!container) return;
 
-        // Instruct Giscus to set theme
-        giscus.setAttribute("data-theme", theme)
+        if (!isLocal) {
+            // 线上环境：加载 Giscus
+            const giscusScript = document.createElement('script');
+            giscusScript.src = 'https://giscus.app/client.js';
+            giscusScript.setAttribute('data-repo', 'djqts/blog');
+            giscusScript.setAttribute('data-repo-id', 'R_kgDOQ3ubGg');
+            giscusScript.setAttribute('data-category', 'Announcements');
+            giscusScript.setAttribute('data-category-id', 'DIC_kwDOQ3ubGs4C08KC');
+            giscusScript.setAttribute('data-mapping', 'pathname');
+            giscusScript.setAttribute('data-strict', '0');
+            giscusScript.setAttribute('data-reactions-enabled', '1');
+            giscusScript.setAttribute('data-emit-metadata', '1');
+            giscusScript.setAttribute('data-input-position', 'top');
+            giscusScript.setAttribute('data-theme', 'preferred_color_scheme');
+            giscusScript.setAttribute('data-lang', 'zh-CN');
+            giscusScript.crossOrigin = 'anonymous';
+            giscusScript.async = true;
+
+            // 初始主题设置
+            const palette = __md_get && __md_get("__palette");
+            if (palette && palette.color && palette.color.scheme) {
+                const theme = palette.color.scheme === "slate"
+                    ? "transparent_dark"
+                    : "light";
+                giscusScript.setAttribute("data-theme", theme);
+            }
+
+            container.appendChild(giscusScript);
+
+            // 主题变化监听
+            document.addEventListener("DOMContentLoaded", function () {
+                const paletteToggle = document.querySelector("[data-md-component=palette]");
+                if (paletteToggle) {
+                    paletteToggle.addEventListener("change", function () {
+                        const palette = __md_get && __md_get("__palette");
+                        if (palette && palette.color && palette.color.scheme) {
+                            const theme = palette.color.scheme === "slate"
+                                ? "transparent_dark"
+                                : "light";
+
+                            const frame = document.querySelector(".giscus-frame");
+                            if (frame && frame.contentWindow) {
+                                frame.contentWindow.postMessage(
+                                    { giscus: { setConfig: { theme } } },
+                                    "https://giscus.app"
+                                );
+                            }
+                        }
+                    });
+                }
+            });
+        } else {
+            // 本地环境：显示友好的提示信息
+            const message = document.createElement('div');
+            message.className = 'local-comment-message';
+            message.innerHTML = `
+                <div style="
+                    background: var(--md-default-bg-color);
+                    border: 1px solid var(--md-primary-fg-color);
+                    border-radius: 8px;
+                    padding: 1.5rem;
+                    margin: 1rem 0;
+                    text-align: center;
+                ">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">💬</div>
+                    <h3 style="margin-top: 0; color: var(--md-primary-fg-color);">
+                        评论功能
+                    </h3>
+                    <p style="margin-bottom: 0.5rem;">
+                        评论功能仅在线上环境可用。您当前正在本地开发服务器中。
+                    </p>
+                    <p style="margin-bottom: 0; color: var(--md-default-fg-color--light); font-size: 0.9rem;">
+                        请访问线上版本以查看和发布评论。
+                    </p>
+                </div>
+            `;
+            container.appendChild(message);
+        }
+    })();
+</script>
+
+<style>
+    .local-comment-message {
+        animation: fadeIn 0.5s ease-in;
     }
 
-    // Register event handlers after documented loaded
-    document.addEventListener("DOMContentLoaded", function () {
-        var ref = document.querySelector("[data-md-component=palette]")
-        ref.addEventListener("change", function () {
-            var palette = __md_get("__palette")
-            if (palette && typeof palette.color === "object") {
-                var theme = palette.color.scheme === "slate"
-                    ? "transparent_dark"
-                    : "light"
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
 
-                // Instruct Giscus to change theme
-                var frame = document.querySelector(".giscus-frame")
-                frame.contentWindow.postMessage(
-                    { giscus: { setConfig: { theme } } },
-                    "https://giscus.app"
-                )
-            }
-        })
-    })
-</script>
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
 {% endif %}

@@ -4,23 +4,62 @@ site_url: https://mydomain.org/mysite
 theme:
   name: material
   custom_dir: overrides
-  palette:
-    # 夜间模式
+  palette: # 颜色主题设置
+    # 自动模式
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+      primary: 'indigo' 
+      accent: 'indigo'
+    # 日模式
     - scheme: default
       toggle:
-        icon: material/lightbulb-outline
+        icon: material/weather-sunny
         name: Dark mode
-      primary: 'indigo'
+      primary: deep purple
       accent: 'indigo'
       
-    # 日间模式
+    # 暗模式
     - scheme: slate
       toggle:
-        icon: material/lightbulb
+        icon: material/weather-night
         name: Switch to light mode
       primary: 'indigo' 
       accent: 'indigo'
 
+  font: false
+  
+  features: # 设置功能标志
+    - navigation.instant  # 启用即时加载
+    - navigation.instant.progress # 启用即时导航进度条
+    - navigation.instant.prefetch # 启用预取功能
+    - navigation.instant.preview # 启用即时导航功能
+    - navigation.tracking # 启用导航跟踪
+    - navigation.top # 启用顶部导航栏
+    - navigation.tabs # 启用选项卡导航
+    - navigation.tabs.sticky # 启用粘性选项卡导航
+    - navigation.sections # 启用导航分区
+    - navigation.path # 显示当前路径
+    - navigation.prune  # 精简导航
+    - navigation.indexes # 启用章节索引页
+
+
+    - toc.follow  # 启用目录跟随
+    - toc.integrate  # 启用集成目录
+    
+    - search.suggest  # 启用搜索建议
+    - search.highlight  # 启用搜索高亮显示
+    - search.share  # 启用搜索分享功能 
+  
+    - content.code.copy  # 启用代码复制按钮
+
+# Markdown扩展
+markdown_extensions: 
+  - toc: 
+      permalink: true  # 为每个标题生成可点击的链接
+
+# 插件
 plugins:
   - search
   - blog:
@@ -31,3 +70,59 @@ plugins:
         - 个人网站
       post_url_format: '{slug}/'
   - tags
+  
+  # 优化插件
+  - privacy # 隐私插件
+  - optimize:
+      optimize_png: false
+  
+  - rss:
+      match_path: docs/posts/.* 
+      date_from_meta:
+        as_creation: date
+      categories:
+        - categories
+        - tags 
+
+
+# 导航栏配置文件
+# nav: 
+
+# 额外的CSS文件
+extra: 
+  consent: 
+    # Cookie 同意横幅设置
+    title: "我们使用 Cookie"
+    description: "本网站使用 Cookie 来改善您的体验。<a href='{{base_url}}/privacy/'>了解更多</a>"
+    cookies:
+      analytics:
+        name: "Google"
+        checked: false
+      github:
+        name: "GitHub"
+        checked: true
+    actions:
+      - accept
+      - reject
+      - manage
+      
+  # google analytics 设置
+  provider: google
+  property: G-P8FGCK6P52
+
+  # 页面反馈设置
+  feedback:
+    title: "您觉得这篇文章怎么样？"
+    description: "您的反馈有助于我们改进内容。"
+    ratings:
+      - icon: material/heart
+        name: Great article!  
+        data: 1
+        note: >-
+          谢谢您的反馈！我很高兴您喜欢这篇文章。
+        
+      - icon: material/heart-broken
+        name: Needs improvement
+        data: 0
+        note: >- 
+          谢谢您的反馈！我会努力改进内容。
