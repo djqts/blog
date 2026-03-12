@@ -1,29 +1,35 @@
 name: publish site
+
 on:
   push:
     branches:
-      - master 
       - main
+      - master
+
+# 授予部署所需的权限
 permissions:
   contents: write
+  pages: write
+  id-token: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Configure Git Credentials
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        # 关键修复：同时安装 mkdocs-material 和 rss 插件
         run: |
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-      - uses: actions/setup-python@v5
-        with:
-          python-version: 3.x
-      - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV 
-      - uses: actions/cache@v4
-        with:
-          key: mkdocs-material-${{ env.cache_id }}
-          path: ~/.cache 
-          restore-keys: |
-            mkdocs-material-
-      - run: pip install mkdocs-material 
-      - run: mkdocs gh-deploy --force
+          pip install --upgrade pip
+          pip install mkdocs-material mkdocs-rss-plugin
+
+      - name: Deploy to GitHub Pages
+        # mkdocs gh-deploy 会自动处理 git 配置和认证，无需手动 git config
+        run: mkdocs gh-deploy --force
