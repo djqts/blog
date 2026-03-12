@@ -70,7 +70,7 @@ plugins:
         - 个人网站
       post_url_format: '{slug}/'
   - tags
-  
+  - rss
   # 优化插件
   - privacy # 隐私插件
   - optimize:
